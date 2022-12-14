@@ -2,20 +2,25 @@ from tqdm import tqdm
 import random
 import json
 import torch
+from transformers import BertTokenizer
+
 
 class BaseLoader:
 	
-	def __init__(self):
+	def __init__(self, tokenizer, label2id):
 		self._data = []
+		self.label2id = label2id
+		self.tokenizer = tokenizer
 	
-	def load_from(self, filename):
+	def load_from(self, filename, seq_length=32):
 		with open(filename, 'r') as f:
 			for line in tqdm(f.readlines(), desc="data loading"):
-				_datum = self._parse_line(line)
+				_datum = self._parse_line(line, tokenizer, seq_length)
 				self._data.append(_datum)
 
-	def _parse_line(self, line):
-		return json.loads(line)
+	def _parse_line(self, line, seq_length):
+		datum = json.loads(line)
+		self.tokenizer.
 
 	def __getitem__(self, k):
 		return self._data[k]
