@@ -13,7 +13,7 @@ class Tokenizer:
 			_res = {}
 			for one in case:
 				tmp = self.__call__(one, seq_length)
-				for key, val in tmp:
+				for key, val in tmp.items():
 					if key not in _res:
 						_res[key] = []
 					_res[key].append(val)
