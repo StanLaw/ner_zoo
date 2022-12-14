@@ -20,7 +20,8 @@ class BaseLoader:
 
 	def _parse_line(self, line, seq_length):
 		datum = json.loads(line)
-		self.tokenizer.
+		return datum
+		#self.tokenizer.
 
 	def __getitem__(self, k):
 		return self._data[k]
