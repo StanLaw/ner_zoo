@@ -1,4 +1,5 @@
 from transformers import BertTokenizer
+from torch import tensor
 import os
 from .tokens import Str2TokenPath
 
@@ -12,7 +13,7 @@ class Tokenizer:
 			_tmp = self.__call__(case, seq_length, to_tensor=False)
 			_res = {}
 			for key, val in _tmp.items():
-				_res[key] = torch.tensor(val)
+				_res[key] = tensor(val)
 			return _res
 
 		if isinstance(case, str):
