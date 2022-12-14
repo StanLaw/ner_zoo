@@ -50,7 +50,7 @@ class BaseLoader:
 		k = len(self._data) // batch_size
 		for i in range(k):
 			yield self._seperate(self._data[i * batch_size: (i+1) * batch_size], seperate)
-		if len(self._data) % self.batch_size > 0:
+		if len(self._data) % batch_size > 0:
 			yield self._seperate(self._data[k * batch_size: ], seperate)
 
 	
