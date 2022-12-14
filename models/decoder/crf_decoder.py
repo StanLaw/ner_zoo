@@ -10,7 +10,7 @@ class CrfDecoder(nn.Module):
 		self.model = CRF(len(labels), batch_first=True)
 		self.labels = labels
 
-	def forward(self, hidden, labels, mask):
+	def forward(self, hidden, labels, mask=None):
 		return self.model(hidden, labels, mask)
 
 	def decode(self, hidden, mask):
