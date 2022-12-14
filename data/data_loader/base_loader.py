@@ -42,7 +42,7 @@ class BaseLoader:
 		_label = []
 		for one in input_list:
 			_names.append(one["text"])
-			_label.append(one["label"])
+			_label.append(one["labels"])
 		return _names, _label
 
 	def batch_iter(self, batch_size=64, seperate=False):
