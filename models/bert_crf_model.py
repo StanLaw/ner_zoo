@@ -15,7 +15,7 @@ class BertCrfModel(nn.Module):
 		loss = self.crf(seq_output, labels)
 		return loss
 
-	def decode(self, features):
+	def predict(self, features):
 		seq_output = self.bert(**features)
 		labels = self.crf.decode(seq_output)
 		return labels
