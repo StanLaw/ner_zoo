@@ -6,7 +6,15 @@ class Tokenizer:
 	def __init__(self, name="bert-base-chinese"):
 		self._tok = BertTokenizer.from_pretrained(Str2TokenPath[name])
 
-	def __call__(self, case, seq_length):
+	def __call__(self, case, seq_length, to_tensor=False):
+
+		if to_tensor:
+			_tmp = self.__call__(case, seq_length, to_tensor=False)
+			_res = {}
+			for key, val in _tmp.items():
+				_res[key] = torch.tensor(val)
+			return _res
+
 		if isinstance(case, str):
 			return self._tok.encode_plus(case, max_length=seq_length, padding="max_length")
 		if isinstance(case, list):
