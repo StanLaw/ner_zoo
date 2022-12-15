@@ -20,11 +20,11 @@ class Tokenizer:
 			return self._tok(
 						case, 
 						max_length=seq_length, 
-						padding=True,
+						padding='max_length',
 						add_special_tokens=True,
 						return_attention_mask=True,
 						return_token_type_ids=False,
-						truncation=False)
+						truncation=True)
 		if isinstance(case, list):
 			_res = {}
 			for one in case:
