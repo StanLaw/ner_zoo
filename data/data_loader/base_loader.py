@@ -16,7 +16,7 @@ class BaseLoader:
 	def load_from(self, filename, seq_length=32):
 		with open(filename, 'r') as f:
 			for line in tqdm(f.readlines(), desc="data loading"):
-				_datum = self._parse_line(line, tokenizer, seq_length)
+				_datum = self._parse_line(line, seq_length)
 				self._data.append(_datum)
 
 	def __parse_labels(self, labels, seq_length):
