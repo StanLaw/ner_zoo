@@ -24,7 +24,7 @@ class Tokenizer:
 						add_special_tokens=True,
 						return_attention_mask=True,
 						return_token_type_ids=False,
-						truncation=True)
+						truncation=False)
 		if isinstance(case, list):
 			_res = {}
 			for one in case:
