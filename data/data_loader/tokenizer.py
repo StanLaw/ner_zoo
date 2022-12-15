@@ -17,7 +17,14 @@ class Tokenizer:
 			return _res
 
 		if isinstance(case, str):
-			return self._tok.encode_plus(case, max_length=seq_length, padding="max_length")
+			return self._tok(
+						case, 
+						max_length=seq_length, 
+						padding=True,
+						add_special_tokens=True,
+						return_attention_mask=True,
+						return_token_type_ids=False,
+						truncation=True)
 		if isinstance(case, list):
 			_res = {}
 			for one in case:

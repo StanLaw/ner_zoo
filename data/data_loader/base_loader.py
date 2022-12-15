@@ -3,14 +3,15 @@ import random
 import json
 import torch
 from transformers import BertTokenizer
-
+from .tokenizer import Tokenizer
+from torch import tensor
 
 class BaseLoader:
 	
-	def __init__(self, tokenizer, label2id):
+	def __init__(self, label2id, token_type="bert-base-chinese"):
 		self._data = []
 		self.label2id = label2id
-		self.tokenizer = tokenizer
+		self.tokenizer = Tokenizer(token_type)
 	
 	def load_from(self, filename, seq_length=32):
 		with open(filename, 'r') as f:
@@ -18,10 +19,25 @@ class BaseLoader:
 				_datum = self._parse_line(line, tokenizer, seq_length)
 				self._data.append(_datum)
 
+	def __parse_labels(self, labels, seq_length):
+		k = len(labels)
+		_res = [1]
+		for i in range(min(k, seq_length-2)):
+			_res.append(self.label2id[labels[i]])
+		k = len(_res)
+		for i in range(k, seq_length):
+			_res.append(0)
+		return _res
+
 	def _parse_line(self, line, seq_length):
+		# raw
 		datum = json.loads(line)
+		# token_ids
+		datum.update(self.tokenizer(datum["text"], seq_length, to_tensor=False))
+		# label_ids
+		datum["label_ids"] = self.__parse_labels(datum["labels"], seq_length)
+
 		return datum
-		#self.tokenizer.
 
 	def __getitem__(self, k):
 		return self._data[k]
@@ -44,14 +60,19 @@ class BaseLoader:
 	def _seperate(input_list, flag):
 		if not flag:
 			return input_list
-		_names = []
-		_label = []
-		for one in input_list:
-			_names.append(one["text"])
-			_label.append(one["labels"])
-		return _names, _label
 
-	def batch_iter(self, batch_size=64, seperate=False):
+		_res = {}
+		for one in input_list:
+			for key, val in one.items():
+				if key not in _res:
+					_res[key] = []
+				_res[key].append(val)
+		for key in _res.keys():
+			_res[key] = tensor(_res[key])
+		
+		return _res
+
+	def batch_iter(self, batch_size=64, seperate=True):
 		self.shuffle()
 		k = len(self._data) // batch_size
 		for i in range(k):
