@@ -8,9 +8,9 @@ from torch import tensor
 
 class BaseLoader:
 	
-	def __init__(self, label2id, token_type="bert-base-chinese"):
+	def __init__(self, token_type="bert-base-chinese"):
 		self._data = []
-		self.label2id = label2id
+		self.label2id = {}
 		self.tokenizer = Tokenizer(token_type)
 	
 	def load_from(self, filename, seq_length=32):
@@ -18,6 +18,13 @@ class BaseLoader:
 			for line in tqdm(f.readlines(), desc="data loading"):
 				_datum = self._parse_line(line, seq_length)
 				self._data.append(_datum)
+
+		with open(os.path.join(os.path.dirname(filename), "labels.txt"), 'r') as f:
+			for line in f.readlines():
+				line = line.strip()
+				if line == "":
+					continue
+				self.label2id[line] = len(self.label2id)
 
 	def __parse_labels(self, labels, seq_length):
 		k = len(labels)
@@ -32,6 +39,7 @@ class BaseLoader:
 	def _parse_line(self, line, seq_length):
 		# raw
 		datum = json.loads(line)
+		for label 
 		# token_ids
 		datum.update(self.tokenizer(datum["text"], seq_length, to_tensor=False))
 		# label_ids
