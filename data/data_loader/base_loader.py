@@ -39,7 +39,6 @@ class BaseLoader:
 	def _parse_line(self, line, seq_length):
 		# raw
 		datum = json.loads(line)
-		for label 
 		# token_ids
 		datum.update(self.tokenizer(datum["text"], seq_length, to_tensor=False))
 		# label_ids
