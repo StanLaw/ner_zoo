@@ -18,7 +18,7 @@ class Tokenizer:
 
 		if isinstance(case, str):
 			return self._tok(
-						case, 
+						" ".join(case), 
 						max_length=seq_length, 
 						padding='max_length',
 						add_special_tokens=True,

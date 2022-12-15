@@ -74,7 +74,7 @@ class BaseLoader:
 				if key not in _res:
 					_res[key] = []
 				_res[key].append(val)
-		for key in _res.keys():
+		for key in ["label_ids", "token_ids", "attention_mask"]:
 			_res[key] = tensor(_res[key])
 		
 		return _res
