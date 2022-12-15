@@ -70,10 +70,10 @@ class BaseLoader:
 
 		_res = {}
 		for one in input_list:
-			for key, val in one.items():
+			for key in ["label_ids", "input_ids", "attention_mask"]:
 				if key not in _res:
 					_res[key] = []
-				_res[key].append(val)
+				_res[key].append(one[key])
 		for key in ["label_ids", "input_ids", "attention_mask"]:
 			_res[key] = tensor(_res[key])
 		
