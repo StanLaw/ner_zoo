@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import random
 import json
-import torch
+import os
 from transformers import BertTokenizer
 from .tokenizer import Tokenizer
 from torch import tensor
