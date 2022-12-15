@@ -14,17 +14,17 @@ class BaseLoader:
 		self.tokenizer = Tokenizer(token_type)
 	
 	def load_from(self, filename, seq_length=32):
-		with open(filename, 'r') as f:
-			for line in tqdm(f.readlines(), desc="data loading"):
-				_datum = self._parse_line(line, seq_length)
-				self._data.append(_datum)
-
 		with open(os.path.join(os.path.dirname(filename), "labels.txt"), 'r') as f:
 			for line in f.readlines():
 				line = line.strip()
 				if line == "":
 					continue
 				self.label2id[line] = len(self.label2id)
+
+		with open(filename, 'r') as f:
+			for line in tqdm(f.readlines(), desc="data loading"):
+				_datum = self._parse_line(line, seq_length)
+				self._data.append(_datum)
 
 	def __parse_labels(self, labels, seq_length):
 		k = len(labels)
