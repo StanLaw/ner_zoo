@@ -5,46 +5,50 @@ import os
 from transformers import BertTokenizer
 from .tokenizer import Tokenizer
 from torch import tensor
+from torch.utils.data import Dataset, Iterable
 
-class BaseLoader:
+class BaseLoader(Dataset):
 	
-	def __init__(self, token_type="bert-base-chinese"):
+	def __init__(self, filename=None, seq_length=32, token_type="bert-base-chinese"):
+		super(BaseLoader, self).__init__()
 		self._data = []
+		self.seq_length = seq_length
 		self.label2id = {}
 		self.tokenizer = Tokenizer(token_type)
+		# 加载数据
+		self.load_from(filename)
 	
-	def load_from(self, filename, seq_length=32):
+	def load_from(self, filename):
+		# 加载标签
 		with open(os.path.join(os.path.dirname(filename), "labels.txt"), 'r') as f:
 			for line in f.readlines():
 				line = line.strip()
 				if line == "":
 					continue
 				self.label2id[line] = len(self.label2id)
-
+		# 加载数据
 		with open(filename, 'r') as f:
 			for line in tqdm(f.readlines(), desc="data loading"):
-				_datum = self._parse_line(line, seq_length)
+				_datum = self._parse_line(line)
 				self._data.append(_datum)
 
-	def __parse_labels(self, labels, seq_length):
+	def __parse_labels(self, labels):
 		k = len(labels)
 		_res = [1]
-		for i in range(min(k, seq_length-2)):
+		for i in range(min(k, self.seq_length-2)):
 			_res.append(self.label2id[labels[i]])
 		k = len(_res)
-		for i in range(k, seq_length):
+		for i in range(k, self.seq_length):
 			_res.append(0)
 		return _res
 
-	def _parse_line(self, line, seq_length):
-		# raw
+	def _parse_line(self, line):
 		datum = json.loads(line)
-		# token_ids
-		datum.update(self.tokenizer(datum["text"], seq_length, to_tensor=False))
-		# label_ids
-		datum["label_ids"] = self.__parse_labels(datum["labels"], seq_length)
-
-		return datum
+		_res = {
+			"text_input": self.tokenizer(datum["text"], self.seq_length, to_tensor=False),
+			"label_input": self.__parse_labels(datum["labels"])
+		}
+		return _res
 
 	def __getitem__(self, k):
 		return self._data[k]
